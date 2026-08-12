@@ -2,9 +2,13 @@ services:
   - type: web
     name: goodhealth-confirm
     runtime: python
+    plan: free
+    region: singapore
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
     healthCheckPath: /health
+    domains:
+      - confirm.goodhealth-tw.com
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -15,9 +19,11 @@ services:
       - key: ADMIN_USER
         value: admin
       - key: ADMIN_PASSWORD
-        generateValue: true
+        sync: false
 
 databases:
   - name: goodhealth-confirm-db
+    plan: free
+    region: singapore
     databaseName: goodhealth_confirm
     user: goodhealth_confirm

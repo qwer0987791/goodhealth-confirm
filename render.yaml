@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: goodhealth-confirm
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: goodhealth-confirm-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_USER
+        value: admin
+      - key: ADMIN_PASSWORD
+        generateValue: true
+
+databases:
+  - name: goodhealth-confirm-db
+    databaseName: goodhealth_confirm
+    user: goodhealth_confirm

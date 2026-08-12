@@ -32,7 +32,7 @@ class Recipient(db.Model):
     attendance_status=db.Column(db.String(20),default='pending',nullable=False)
 
 def check_auth(username,password): return username==os.environ.get('ADMIN_USER','admin') and password==os.environ.get('ADMIN_PASSWORD','change-me-now')
-def authenticate(): return Response('需要管理員登入',401,{'WWW-Authenticate':'Basic realm="戰鬥陀螺挑戰營管理後台"'})
+def authenticate(): return Response('Admin login required',401,{'WWW-Authenticate':'Basic realm="Beyblade Admin"'})
 def admin_required(fn):
     @wraps(fn)
     def wrapper(*args,**kwargs):
@@ -44,7 +44,6 @@ def admin_required(fn):
 @app.before_request
 def create_tables():
     db.create_all()
-    # 舊資料庫自動補上 attendance_status 欄位
     try:
         db.session.execute(text("ALTER TABLE recipient ADD COLUMN attendance_status VARCHAR(20) NOT NULL DEFAULT 'pending'"))
         db.session.commit()

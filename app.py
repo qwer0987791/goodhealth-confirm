@@ -94,6 +94,19 @@ def confirm(token):
             db.session.commit()
     return render_template('confirm.html',person=person)
 
+@app.route('/status/<int:recipient_id>',methods=['POST'])
+@admin_required
+def update_status(recipient_id):
+    person=db.session.get(Recipient,recipient_id)
+    if person:
+        status=request.form.get('status','pending')
+        if status in ('attending','declined','pending'):
+            person.attendance_status=status
+            person.confirmed=(status=='attending')
+            person.confirmed_at=None if status=='pending' else now_tw()
+            db.session.commit()
+    return redirect(url_for('admin'))
+
 @app.route('/reset/<int:recipient_id>',methods=['POST'])
 @admin_required
 def reset(recipient_id):
